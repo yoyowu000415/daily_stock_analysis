@@ -132,6 +132,12 @@ def parse_arguments() -> argparse.Namespace:
         action='store_true',
         help='跳过大盘复盘分析'
     )
+    
+      parser.add_argument(
+          '--morning-briefing',
+          action='store_true',
+          help='运行早盘情报分析（隔夜美股+财经新闻+大盘预判）'
+      )
 
     parser.add_argument(
         '--force-run',
@@ -604,6 +610,17 @@ def main() -> int:
             )
             return 0
 
+
+        # 模式0.5: 早盘情报
+        if getattr(args, 'morning_briefing', False):
+            logger.info("模式: 早盘情报")
+            from src.morning_briefing import run_morning_briefing
+            run_morning_briefing(
+                  send_notification=True,
+                  no_notify=args.no_notify,
+              )
+              return 0
+            
         # 模式1: 仅大盘复盘
         if args.market_review:
             from src.analyzer import GeminiAnalyzer
