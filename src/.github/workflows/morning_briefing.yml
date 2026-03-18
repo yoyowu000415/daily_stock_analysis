@@ -1,0 +1,61 @@
+ name: 早盘情报
+
+  on:
+    schedule:
+      - cron: '50 0 * * 1-5'
+    workflow_dispatch:
+
+  concurrency:
+    group: morning-briefing
+    cancel-in-progress: false
+
+  jobs:
+    briefing:
+      runs-on: ubuntu-latest
+      timeout-minutes: 15
+
+      steps:
+        - name: 随机延迟
+          run: sleep $((RANDOM % 30))
+
+        - name: 检出代码
+          uses: actions/checkout@v5
+
+        - name: 设置 Python 环境
+          uses: actions/setup-python@v6
+          with:
+            python-version: '3.11'
+            cache: 'pip'
+
+        - name: 安装依赖
+          run: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+        - name: 创建必要目录
+          run: mkdir -p data logs reports
+
+        - name: 执行早盘情报分析
+          env:
+            GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+            DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+            AIHUBMIX_KEY: ${{ secrets.AIHUBMIX_KEY }}
+            FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+            WECHAT_WEBHOOK_URL: ${{ secrets.WECHAT_WEBHOOK_URL }}
+            TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+            DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+            LOG_LEVEL: INFO
+          run: python main.py --morning-briefing
+
+        - name: 上传报告
+          uses: actions/upload-artifact@v6
+          if: always()
+          with:
+            name: morning-briefing-${{ github.run_number }}
+            path: |
+              reports/
+              logs/
+            retention-days: 30
