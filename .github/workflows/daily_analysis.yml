@@ -236,11 +236,16 @@ jobs:
             echo "⚡ 已启用强制运行模式（跳过交易日检查）"
           fi
 
-          # 执行分析
+          # 执行分析  判断是否早报时段（UTC 23:00-00:00 = 北京 07:00-08:00）
+          HOUR=$(date -u +%H)
+          
           if [ "$MODE" = "market-only" ]; then
             python main.py --market-review $FORCE_RUN_ARG
           elif [ "$MODE" = "stocks-only" ]; then
             python main.py --no-market-review $FORCE_RUN_ARG
+          elif [ "$HOUR" = "23" ]; then
+            echo "🌅 早报模式"
+            python main.py --morning-briefing $FORCE_RUN_ARG
           else
             python main.py $FORCE_RUN_ARG
           fi
