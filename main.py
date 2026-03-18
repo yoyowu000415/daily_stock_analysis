@@ -609,11 +609,11 @@ def main() -> int:
         if getattr(args, 'morning_briefing', False):
             logger.info("模式: 早盘情报")
             from src.morning_briefing import run_morning_briefing
-            run_morning_briefing(
-                  send_notification=True,
-                  no_notify=args.no_notify,
-              )
-              return 0
+          run_morning_briefing(
+                send_notification=True,
+                no_notify=args.no_notify,
+            )
+            return 0
             
         # 模式1: 仅大盘复盘
         if args.market_review:
