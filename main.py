@@ -127,12 +127,6 @@ def parse_arguments() -> argparse.Namespace:
         help='仅运行大盘复盘分析'
     )
 
-    parser.add_argument(
-        '--no-market-review',
-        action='store_true',
-        help='跳过大盘复盘分析'
-    )
-    
       parser.add_argument(
           '--morning-briefing',
           action='store_true',
