@@ -127,10 +127,10 @@ def parse_arguments() -> argparse.Namespace:
         help='仅运行大盘复盘分析'
     )
 
-      parser.add_argument(
-          '--morning-briefing',
-          action='store_true',
-          help='运行早盘情报分析（隔夜美股+财经新闻+大盘预判）'
+    parser.add_argument(
+        '--morning-briefing',
+        action='store_true',
+        help='运行早盘情报分析（隔夜美股+财经新闻+大盘预判）'
       )
 
     parser.add_argument(
